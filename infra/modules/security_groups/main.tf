@@ -29,7 +29,7 @@ resource "aws_security_group" "alb" {
   tags = { Name = "${var.project_name}-alb-sg" }
 }
 
-# ECS security group — ONLY accepts traffic from ALB
+# ECS security group — accepts from ALB only
 resource "aws_security_group" "ecs" {
   name   = "${var.project_name}-ecs-sg"
   vpc_id = var.vpc_id
@@ -38,6 +38,22 @@ resource "aws_security_group" "ecs" {
     description     = "Flask port from ALB only"
     from_port       = 5000
     to_port         = 5000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  ingress {
+    description     = "Prometheus port"
+    from_port       = 9090
+    to_port         = 9090
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  ingress {
+    description     = "Grafana port"
+    from_port       = 3000
+    to_port         = 3000
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
@@ -52,7 +68,7 @@ resource "aws_security_group" "ecs" {
   tags = { Name = "${var.project_name}-ecs-sg" }
 }
 
-# RDS security group — ONLY accepts traffic from ECS
+# RDS security group — accepts from ECS only
 resource "aws_security_group" "rds" {
   name   = "${var.project_name}-rds-sg"
   vpc_id = var.vpc_id

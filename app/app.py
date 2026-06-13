@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
+from prometheus_flask_exporter import PrometheusMetrics
 import sqlite3
 import os
 
 app = Flask(__name__)
 
-# DB path — works locally and in Docker
+# Prometheus metrics — exposed at /metrics endpoint
+metrics = PrometheusMetrics(app)
+metrics.info('app_info', 'Task API info', version='1.0.0')
+
 DB_PATH = os.environ.get("DB_PATH", "tasks.db")
 
 def get_db():

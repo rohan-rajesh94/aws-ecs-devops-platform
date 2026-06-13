@@ -7,3 +7,12 @@ variable "execution_role_arn"   { type = string }
 variable "task_role_arn"        { type = string }
 variable "ecr_image_url"        { type = string }
 variable "alb_target_group_arn" { type = string }
+variable "prometheus_image" {
+  type    = string
+  default = "prom/prometheus:latest"
+}
+
+variable "grafana_image" {
+  type    = string
+  default = "grafana/grafana:latest"
+}
