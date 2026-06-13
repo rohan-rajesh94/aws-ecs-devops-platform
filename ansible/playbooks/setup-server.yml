@@ -1,0 +1,23 @@
+---
+# Master playbook — runs all roles in order
+
+- name: Setup production server
+  hosts: webservers
+  become: yes        # run as sudo
+  gather_facts: yes
+
+  roles:
+    - common         # basic packages + AWS CLI
+    - docker         # install Docker + Compose
+    - security       # firewall + SSH hardening
+
+  post_tasks:
+    - name: Print completion message
+      debug:
+        msg: |
+          ✅ Server setup complete!
+          Docker: installed
+          Firewall: enabled
+          SSH: hardened
+          fail2ban: running
+          Ready for deployment!
