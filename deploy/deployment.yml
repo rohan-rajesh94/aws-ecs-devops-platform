@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskapi
+  namespace: taskapi
+  labels:
+    app: taskapi
+spec:
+  replicas: 2                    # 2 pods running always
+  selector:
+    matchLabels:
+      app: taskapi
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1                # add 1 extra pod during update
+      maxUnavailable: 0          # never kill pod before new one ready
+  template:
+    metadata:
+      labels:
+        app: taskapi
+    spec:
+      containers:
+        - name: taskapi
+          image: 346866990256.dkr.ecr.ap-south-1.amazonaws.com/aws-ecs-devops-platform:latest
+          ports:
+            - containerPort: 5000
+
+          # Load config from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: taskapi-config
+
+          # Resource limits — prevent one pod eating all memory
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+      # Spread pods across availability zones
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: taskapi
