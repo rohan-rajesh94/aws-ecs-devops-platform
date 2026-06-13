@@ -21,7 +21,7 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot     = true   # ok for dev — change to false for prod
   deletion_protection     = false
   storage_encrypted       = true
-  backup_retention_period = 7
+  backup_retention_period = 0
 
   tags = { Name = "${var.project_name}-db" }
 }

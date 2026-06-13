@@ -25,5 +25,9 @@ variable "db_password" {
 
 variable "ecr_image_url" {
   type    = string
-  default = "public.ecr.aws/nginx/nginx:latest"
+  default = "346866990256.dkr.ecr.ap-south-1.amazonaws.com/aws-ecs-devops-platform:latest"
+}
+variable "alert_email" {
+  type    = string
+  default = "rohanrajeshr94@gmail.com"
 }

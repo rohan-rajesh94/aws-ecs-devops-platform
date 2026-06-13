@@ -56,3 +56,12 @@ module "ecs" {
   ecr_image_url        = var.ecr_image_url
   alb_target_group_arn = module.alb.target_group_arn
 }
+module "monitoring" {
+  source            = "./modules/monitoring"
+  project_name      = var.project_name
+  alert_email       = var.alert_email
+  ecs_cluster_name  = module.ecs.cluster_name
+  ecs_service_name  = module.ecs.service_name
+  alb_arn_suffix    = module.alb.alb_arn_suffix
+  tg_arn_suffix     = module.alb.tg_arn_suffix
+}

@@ -19,3 +19,5 @@ output "db_endpoint"     { value = module.rds.db_endpoint }
 output "ecs_cluster"     { value = module.ecs.cluster_name }
 output "ecs_service"     { value = module.ecs.service_name }
 output "log_group"       { value = module.ecs.log_group_name }
+output "sns_topic_arn"  { value = module.monitoring.sns_topic_arn }
+output "dashboard_name" { value = module.monitoring.dashboard_name }
